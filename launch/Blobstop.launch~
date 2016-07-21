@@ -1,0 +1,17 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+
+   <arg name="racecar_version" default="racecar-v2" />
+
+   <include file="$(find zed_wrapper)/launch/zed.launch" />
+   <include file="$(find racecar)/launch/teleop.launch" />
+
+   
+   <node name="ControlSystem" pkg="blob_follower" type="ControlSystem5.py" />
+   <node name="BlobDetector" pkg="blob_follower" type="blobdetection7.py"/>
+   <node name="Joystick" pkg="blob_follower" type="joy_reciever.py"/>
+   <node name="Follow_Wall" pkg="follow_wall" type="pid3.py"/>
+   <node name="EmergencyStop" pkg="follow_wall" type="EmergencyStop.py"/>
+<!-- -*-   <node name="EmergencyStop" pkg="blob_follower" type" -->
+
+</launch>
