@@ -13,11 +13,11 @@ from racecar.msg import BlobDetections
 
 
 global colors, color_dims, color_map
-colors = ["green"]#"red","yellow","green"]#"yellow", "
+colors = ["green","red","yellow"]#"red","yellow","green"]#"yellow", "
 
-color_dims = {"red":(np.array([0,190,200]).astype(np.uint8), np.array([15,255,255]).astype(np.uint8)),\
-              "green":(np.array([50, 80, 150]).astype(np.uint8), np.array([90,255,255]).astype(np.uint8)),\
-              "yellow": (np.array([25,150,150]).astype(np.uint8), np.array([45,255,255]).astype(np.uint8))}
+color_dims = {"red":(np.array([0,190, 100]).astype(np.uint8), np.array([15,255,255]).astype(np.uint8)),\
+              "green":(np.array([50,80, 100]).astype(np.uint8), np.array([1000,255,255]).astype(np.uint8)),\
+              "yellow": (np.array([25,150,100]).astype(np.uint8), np.array([45,255,255]).astype(np.uint8))}
 
 
 #color_dims = {"red":(np.array([0,150,150]).astype(np.uint8), np.array([15,255,255]).astype(np.uint8), np.array([175,150,150]).astype(np.uint8), np.array([0, 255, 255]).astype(np.uint8)),\
@@ -76,10 +76,8 @@ def thresholdColor(img):
     #        #rospy.loginfo(right)
      #       combs.append(cv2.bitwise_and(left,right))
       #  else:
-        #(lower, upper) = colattr
-        lower = np.array([50, 80, 150]).astype(np.uint8)
-        upper = np.array([90,255,255]).astype(np.uint8)
-        
+        (lower, upper) = colattr
+        rospy.loginfo(hsv[640,360])
         cut = cv2.inRange(hsv,lower,upper).astype(np.uint8)
         rospy.loginfo(c)
         rospy.loginfo(colattr)
@@ -133,8 +131,6 @@ def process(img):
     time1 = time.time()
     cond = lambda x: lowthresarea < x
     combs = thresholdColor(img)
-    print(combs)
-    
     time2 = time.time()
     for i in range(len(colors)):
         col = color_dims[colors[i]]
