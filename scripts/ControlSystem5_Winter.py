@@ -12,7 +12,7 @@ from geometry_msgs.msg import Point
 
 import numpy as np
 
-global Stage_2, Turning
+global Wall_Follow, Turning
 Wall_Follow = False
 Turning = False
 class MoveTowardImage:
