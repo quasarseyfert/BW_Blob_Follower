@@ -7,26 +7,24 @@ import rospy
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 import threading
-from std_msgs.msg import Float64, ColorRGBA
+from std_msgs.msg import Float64
+from std_msgs.msg import ColorRGBA
 from geometry_msgs.msg import Point
-from racecar.msg import BlobDetections
+from blob_follower.msg import BlobDetections
 
 
 global colors, color_dims, color_map
-colors = ["green","red","yellow"]#"red","yellow","green"]#"yellow", "
+colors = ["green","red","yellow"]
 
-color_dims = {"red":(np.array([0,190, 100]).astype(np.uint8), np.array([15,255,255]).astype(np.uint8)),\
-              "green":(np.array([50,80, 100]).astype(np.uint8), np.array([1000,255,255]).astype(np.uint8)),\
-              "yellow": (np.array([25,150,100]).astype(np.uint8), np.array([45,255,255]).astype(np.uint8))}
+color_dims = {"red":(np.array([0,190, 200]).astype(np.uint8), np.array([15,255,255]).astype(np.uint8)),\
+              "green":(np.array([35,190, 100]).astype(np.uint8), np.array([80,255,255]).astype(np.uint8)),\
+              "yellow": (np.array([20,200,150]).astype(np.uint8), np.array([30,255,255]).astype(np.uint8))}
 
 
 #color_dims = {"red":(np.array([0,150,150]).astype(np.uint8), np.array([15,255,255]).astype(np.uint8), np.array([175,150,150]).astype(np.uint8), np.array([0, 255, 255]).astype(np.uint8)),\
 #              "green":(np.array([55, 150, 150]).astype(np.uint8), np.array([75, 255, 255]).astype(np.uint8)),\
 #              "yellow": (np.array([25,150,150]).astype(np.uint8), np.array([45,255,255]).astype(np.uint8))}
 
-#color_dims = {"red":("r", 150, 1.7, 2.5),\
-#    "yellow": ("g",150, .6, 2.2),\
-#    "green": ("g", 60, 1.5, 1)}#"g", 60, 1.5, 1.5
 redB = ColorRGBA()
 redB.r = 255
 yellowB = ColorRGBA()
@@ -63,8 +61,6 @@ def blobdetection(img, cond, col):
 
 #threshold the image for a certain range of color, to be modified
 def thresholdColor(img):
-    #CANCEL MESSAGE TEMP
-    
     hsv = cv2.cvtColor(img.astype(np.uint8), cv2.COLOR_BGR2HSV).astype(np.uint8)
     combs = []
     for c in colors:
@@ -77,16 +73,15 @@ def thresholdColor(img):
      #       combs.append(cv2.bitwise_and(left,right))
       #  else:
         (lower, upper) = colattr
-        rospy.loginfo(hsv[640,360])
         cut = cv2.inRange(hsv,lower,upper).astype(np.uint8)
-        rospy.loginfo(c)
-        rospy.loginfo(colattr)
+        #rospy.loginfo(c)
+        #rospy.loginfo(colattr)
         combs.append(cut)
 
-    cv2.imshow("n", cut)
-    cv2.imshow("img",img)
-    cv2.imshow("hsv",hsv)
-    cv2.waitKey(1)
+   # cv2.imshow("n", cut)
+  #  cv2.imshow("img",img)
+ #   cv2.imshow("hsv",hsv)
+#    cv2.waitKey(1)
     
     return combs
 
@@ -125,7 +120,7 @@ def process(img):
     rospy.loginfo("START")
     time0 = time.time()
 
-    lowthresarea = 5000
+    lowthresarea = 2000
     #highthresarea = 10000000000
 
     time1 = time.time()

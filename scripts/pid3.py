@@ -12,7 +12,7 @@ class pid_controller():
     def __init__(self):
         self.driving = AckermannDriveStamped()
         self.driving.header.stamp = rospy.Time.now()
-        self.driving.drive.speed = 10
+        self.driving.drive.speed = 1.2#10
         self.ddes = .8
         self.prev_times = collections.deque([time.clock() for _ in range(10)])
         self.prev_errors = collections.deque([0 for _ in range(4)])
@@ -22,10 +22,10 @@ class pid_controller():
         self.mult = -1  # left
         self.start_ind = 580  # left
         self.end_ind = 1000  # left
-        self.pid_pub = rospy.Publisher("/racecar/ackermann_cmd_mux/input/navigation", AckermannDriveStamped, queue_size=1)
+        self.pid_pub = rospy.Publisher("/vesc/ackermann_cmd_mux/input/navigation", AckermannDriveStamped, queue_size=1)
 	self.blob_sub = rospy.Subscriber("/blob_color", String, self.side_callback)
-        self.scan_sub = rospy.Subscriber("/racecar/laser/scan", LaserScan, self.pid_callback)
-        self.runbool = True#False
+        self.scan_sub = rospy.Subscriber("/scan", LaserScan, self.pid_callback)
+        self.runbool = False
         
     def pid_callback(self, msg):
         if self.runbool == False:return
@@ -39,14 +39,16 @@ class pid_controller():
         self.pid_pub.publish(self.driving)
 
     def side_callback(self, msg):
-        if blob_sub == "g":  # left wall
-            self.runbool = True
-            self.mult = -1
-            self.start_ind = 580
-            self.end_ind = 1000
-        elif blob_sub == "r":  # right wall
+        if blob_sub == "r":  # left wall
             self.runbool = True
             self.mult = 1
+            #define the side
+            self.start_ind = 580
+            self.end_ind = 1000
+        elif blob_sub == "g":  # right wall
+            self.runbool = True
+            self.mult = -1
+            #define the side
             self.start_ind = 80
             self.end_ind = 500
 	else:
